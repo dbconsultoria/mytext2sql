@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: dbconsultoria/mysql-mydb:1.0
+    container_name: mysql_mydb
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: mypswd
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myusr
+      MYSQL_PASSWORD: mypswd
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - D:/Github/mytext2sql/mysql/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+      - D:/Github/mytext2sql/mysql/x90_views.sql:/docker-entrypoint-initdb.d/x90_views.sql
+      - D:/Github/mytext2sql/mysql/x91_usuario_readonly.sql:/docker-entrypoint-initdb.d/x91_usuario_readonly.sql
+
+    networks:
+      - lakehouse_net
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  lakehouse_net:
+    external: true

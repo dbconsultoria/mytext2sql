@@ -1,0 +1,7 @@
+.idea/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+eval/relatorio_*.csv

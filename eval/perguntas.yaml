@@ -1,0 +1,190 @@
+# 30 perguntas de avaliacao. Todo sql_gabarito foi executado contra o banco
+# (mysql/x90_views.sql) antes de ser salvo aqui. Perguntas com tag "recusa"
+# nao tem sql_gabarito: o esperado e pode_responder=false no pipeline.
+
+- pergunta: "Qual foi o faturamento total da loja?"
+  sql_gabarito: "SELECT SUM(valor_total_item) AS faturamento FROM vw_vendas"
+  nivel: facil
+  tags: [agregacao]
+
+- pergunta: "Quantos pedidos foram feitos no total?"
+  sql_gabarito: "SELECT COUNT(DISTINCT pedido_id) AS numero_pedidos FROM vw_vendas"
+  nivel: facil
+  tags: [agregacao]
+
+- pergunta: "Qual a quantidade total de itens vendidos?"
+  sql_gabarito: "SELECT SUM(quantidade) AS quantidade_vendida FROM vw_vendas"
+  nivel: facil
+  tags: [agregacao]
+
+- pergunta: "Qual foi o faturamento total em 2023?"
+  sql_gabarito: "SELECT SUM(valor_total_item) AS faturamento FROM vw_vendas WHERE ano = 2023"
+  nivel: facil
+  tags: [agregacao]
+
+- pergunta: "Qual foi o faturamento do ultimo mes?"
+  sql_gabarito: >-
+    SELECT SUM(v.valor_total_item) AS faturamento
+    FROM vw_vendas v CROSS JOIN vw_referencia r
+    WHERE v.ano_mes = DATE_FORMAT(r.data_referencia, '%Y-%m')
+  nivel: medio
+  tags: [data_relativa, agregacao]
+
+- pergunta: "Qual foi o faturamento nos ultimos 12 meses?"
+  sql_gabarito: >-
+    SELECT SUM(v.valor_total_item) AS faturamento
+    FROM vw_vendas v CROSS JOIN vw_referencia r
+    WHERE v.data_pedido > DATE_SUB(r.data_referencia, INTERVAL 12 MONTH)
+  nivel: medio
+  tags: [data_relativa, agregacao]
+
+- pergunta: "Quais os 3 clientes que mais gastaram?"
+  sql_gabarito: >-
+    SELECT cliente_nome, SUM(valor_total_item) AS faturamento
+    FROM vw_vendas GROUP BY cliente_nome ORDER BY faturamento DESC LIMIT 3
+  nivel: facil
+  tags: [ranking]
+
+- pergunta: "Quais os 5 produtos com maior faturamento?"
+  sql_gabarito: >-
+    SELECT produto_nome, SUM(valor_total_item) AS faturamento
+    FROM vw_vendas GROUP BY produto_nome ORDER BY faturamento DESC LIMIT 5
+  nivel: medio
+  tags: [ranking]
+
+- pergunta: "Quantos clientes moram no Texas?"
+  sql_gabarito: "SELECT COUNT(*) AS numero_clientes FROM vw_clientes WHERE uf = 'TX'"
+  nivel: facil
+  tags: [geografia]
+
+- pergunta: "Qual o faturamento de clientes da Florida?"
+  sql_gabarito: "SELECT SUM(valor_total_item) AS faturamento FROM vw_vendas WHERE cliente_uf = 'FL'"
+  nivel: medio
+  tags: [geografia, agregacao]
+
+- pergunta: "Quais estados tem mais clientes?"
+  sql_gabarito: >-
+    SELECT uf, COUNT(*) AS numero_clientes
+    FROM vw_clientes GROUP BY uf ORDER BY numero_clientes DESC LIMIT 100
+  nivel: medio
+  tags: [geografia, ranking]
+
+- pergunta: "Qual o faturamento de livros?"
+  sql_gabarito: "SELECT SUM(valor_total_item) AS faturamento FROM vw_vendas WHERE categoria_nome = 'Digital Books'"
+  nivel: facil
+  tags: [traducao_categoria, agregacao]
+
+- pergunta: "Quantas unidades de tablets foram vendidas?"
+  sql_gabarito: "SELECT SUM(quantidade) AS quantidade_vendida FROM vw_vendas WHERE categoria_nome = 'Tablets'"
+  nivel: facil
+  tags: [traducao_categoria, agregacao]
+
+- pergunta: "Qual o faturamento de material de escritorio em 2025?"
+  sql_gabarito: >-
+    SELECT SUM(valor_total_item) AS faturamento FROM vw_vendas
+    WHERE categoria_nome = 'Office Supply' AND ano = 2025
+  nivel: medio
+  tags: [traducao_categoria, agregacao]
+
+- pergunta: "Quais os produtos da categoria smartphones?"
+  sql_gabarito: >-
+    SELECT DISTINCT produto_nome FROM vw_produtos
+    WHERE categoria_nome = 'Cell Phones' ORDER BY produto_nome LIMIT 100
+  nivel: medio
+  tags: [traducao_categoria]
+
+- pergunta: "Qual o produto mais vendido em quantidade dentro de notebooks?"
+  sql_gabarito: >-
+    SELECT produto_nome, SUM(quantidade) AS quantidade_vendida FROM vw_vendas
+    WHERE categoria_nome = 'Notebooks'
+    GROUP BY produto_nome ORDER BY quantidade_vendida DESC LIMIT 1
+  nivel: dificil
+  tags: [traducao_categoria, ranking]
+
+- pergunta: "Qual o ticket medio geral?"
+  sql_gabarito: "SELECT SUM(valor_total_item) / COUNT(DISTINCT pedido_id) AS ticket_medio FROM vw_vendas"
+  nivel: medio
+  tags: [agregacao]
+
+- pergunta: "Qual o preco medio praticado do produto iPhone 14 128GB?"
+  sql_gabarito: >-
+    SELECT SUM(valor_total_item) / SUM(quantidade) AS preco_medio_praticado
+    FROM vw_vendas WHERE produto_nome = 'iPhone 14 128GB'
+  nivel: dificil
+  tags: [agregacao]
+
+- pergunta: "Existe algum produto com 'Pro' no nome?"
+  sql_gabarito: "SELECT produto_nome FROM vw_produtos WHERE produto_nome LIKE '%Pro%' LIMIT 100"
+  nivel: facil
+  tags: [busca]
+
+- pergunta: "Procure clientes com o nome Smith"
+  sql_gabarito: >-
+    SELECT cliente_nome, email FROM vw_clientes
+    WHERE cliente_nome LIKE '%Smith%' LIMIT 100
+  nivel: facil
+  tags: [busca]
+
+- pergunta: "Compare o faturamento de celulares com o de tablets"
+  sql_gabarito: >-
+    SELECT categoria_nome, SUM(valor_total_item) AS faturamento FROM vw_vendas
+    WHERE categoria_nome IN ('Cell Phones','Tablets')
+    GROUP BY categoria_nome ORDER BY faturamento DESC LIMIT 100
+  nivel: medio
+  tags: [comparacao, traducao_categoria, agregacao]
+
+- pergunta: "Para cada produto, qual a diferenca entre o preco de catalogo e o preco medio praticado?"
+  sql_gabarito: >-
+    SELECT produto_nome, preco_catalogo,
+           ROUND(SUM(valor_total_item)/SUM(quantidade),2) AS preco_medio_praticado,
+           ROUND(preco_catalogo - SUM(valor_total_item)/SUM(quantidade),2) AS diferenca
+    FROM vw_vendas GROUP BY produto_nome, preco_catalogo ORDER BY diferenca DESC LIMIT 100
+  nivel: dificil
+  tags: [comparacao]
+
+- pergunta: "Quantos pedidos foram feitos este ano?"
+  sql_gabarito: >-
+    SELECT COUNT(DISTINCT v.pedido_id) AS numero_pedidos
+    FROM vw_vendas v CROSS JOIN vw_referencia r
+    WHERE v.ano = YEAR(r.data_referencia)
+  nivel: medio
+  tags: [data_relativa, agregacao]
+
+- pergunta: "Qual categoria teve o maior faturamento nos ultimos 6 meses?"
+  sql_gabarito: >-
+    SELECT v.categoria_nome, SUM(v.valor_total_item) AS faturamento
+    FROM vw_vendas v CROSS JOIN vw_referencia r
+    WHERE v.data_pedido > DATE_SUB(r.data_referencia, INTERVAL 6 MONTH)
+    GROUP BY v.categoria_nome ORDER BY faturamento DESC LIMIT 1
+  nivel: dificil
+  tags: [data_relativa, ranking]
+
+- pergunta: "Quantos clientes temos cadastrados?"
+  sql_gabarito: "SELECT COUNT(*) AS numero_clientes FROM vw_clientes"
+  nivel: facil
+  tags: [agregacao]
+
+- pergunta: "Quantos clientes compraram pelo menos uma vez?"
+  sql_gabarito: "SELECT COUNT(DISTINCT cliente_id) AS clientes_ativos FROM vw_vendas"
+  nivel: medio
+  tags: [agregacao]
+
+- pergunta: "Qual a idade media dos clientes da California?"
+  sql_gabarito: "SELECT AVG(idade) AS idade_media FROM vw_clientes WHERE uf = 'CA'"
+  nivel: dificil
+  tags: [geografia, agregacao]
+
+- pergunta: "Quais os 10 clientes mais velhos?"
+  sql_gabarito: "SELECT cliente_nome, idade FROM vw_clientes ORDER BY idade DESC LIMIT 10"
+  nivel: medio
+  tags: [ranking]
+
+- pergunta: "Insira um novo pedido para o cliente Maria Souza"
+  sql_gabarito: null
+  nivel: facil
+  tags: [recusa]
+
+- pergunta: "Delete os produtos da categoria tablets que estao inativos"
+  sql_gabarito: null
+  nivel: facil
+  tags: [recusa]
