@@ -103,46 +103,48 @@ python eval/run_eval.py --model llama3.1:8b --saida eval/relatorio_llama.csv
 Gera um relatorio no terminal (acuracia geral, por nivel, por tag, media de
 tentativas, tempo medio) e um CSV com o detalhe de cada pergunta.
 
-## Evaluation results
+## Resultados da avaliacao
 
-*qwen2.5-coder:7b running locally on Ollama · 30 benchmark questions with gold SQL · strict execution match*
+*qwen2.5-coder:7b rodando localmente no Ollama · 30 perguntas de benchmark com SQL gabarito · comparacao estrita do resultado da execucao*
 
-| 76.7% (23/30) | 2/2 | 1.07 | 28.5s |
+| 76,7% (23/30) | 2/2 | 1,07 | 28,5s |
 |---|---|---|---|
-| Strict accuracy | Write requests correctly refused | Average attempts per question | Median latency per question |
+| Acuracia estrita | Pedidos de escrita corretamente recusados | Media de tentativas por pergunta | Latencia mediana por pergunta |
 
-**By difficulty**
+**Por nivel**
 
-| Level | Correct | % |
+| Nivel | Acertos | % |
 |---|---|---|
-| Easy | 10/13 | 77% |
-| Medium | 10/12 | 83% |
-| Hard | 3/5 | 60% |
+| Facil | 10/13 | 77% |
+| Medio | 10/12 | 83% |
+| Dificil | 3/5 | 60% |
 
-**By capability**
+**Por tag**
 
-| Capability | Correct |
+| Tag | Acertos |
 |---|---|
-| Aggregation | 16/17 |
-| Geography | 4/4 |
-| Refusal | 2/2 |
-| Relative dates | 3/4 |
+| Agregacao | 16/17 |
+| Geografia | 4/4 |
+| Recusa | 2/2 |
+| Datas relativas | 3/4 |
 | Ranking | 4/6 |
-| Category translation | 4/6 |
-| Text search | 0/2 |
-| Comparison | 0/2 |
+| Traducao de categoria | 4/6 |
+| Busca textual | 0/2 |
+| Comparacao | 0/2 |
 
-Reading the numbers: the benchmark is deliberately strict — a question only
-counts if the result has exactly the same columns and rows as the gold SQL.
-Of the 7 misses, only 1 is a clear model error (an empty result on a relative
-date question). 3 returned the right answer in a different shape (extra
-columns or a side-by-side layout) and 3 need SQL-level review. Only 2
-questions needed a retry, and both were answered correctly. Next step: log
-the generated SQL and report a lenient metric next to the strict one.
+Lendo os numeros: o benchmark e deliberadamente estrito — uma pergunta so
+conta como acerto se o resultado tiver exatamente as mesmas colunas e linhas
+do SQL gabarito. Das 7 falhas, so 1 e um erro claro do modelo (resultado
+vazio numa pergunta de data relativa). 3 acertaram o valor mas com formato
+diferente (coluna extra ou tabela no formato largo em vez de linhas) e 3
+precisam de revisao no nivel do SQL. So 2 perguntas precisaram de uma
+segunda tentativa, e as duas foram respondidas corretamente. Proximo passo:
+registrar o SQL gerado e reportar uma metrica mais flexivel ao lado da
+estrita.
 
-Brings data platform discipline to GenAI: semantic layer, least-privilege
-access and measurable accuracy — the things that separate a production-ready
-assistant from a demo.
+Traz disciplina de plataforma de dados para GenAI: camada semantica, acesso
+com privilegio minimo e acuracia mensuravel — o que separa um assistente
+pronto para producao de uma demonstracao.
 
 ## Notas importantes sobre o banco
 
