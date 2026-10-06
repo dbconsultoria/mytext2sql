@@ -9,6 +9,8 @@ O modelo nunca ve as tabelas cruas (`tb*`), so as 4 views semanticas em
 `app/sql_guard.py` e um usuario de banco (`texto_sql_ro`) com `GRANT SELECT`
 apenas nas views.
 
+![Arquitetura do mytext2sql](docs/mytext2sql_diagrama.svg)
+
 ## Pre-requisitos
 
 - Docker Desktop
@@ -100,30 +102,6 @@ python eval/run_eval.py --model llama3.1:8b --saida eval/relatorio_llama.csv
 
 Gera um relatorio no terminal (acuracia geral, por nivel, por tag, media de
 tentativas, tempo medio) e um CSV com o detalhe de cada pergunta.
-
-## Estrutura
-
-```
-app/
-  config.py          # le .env
-  db.py               # conexao read-only, timeout e limite de linhas
-  schema_context.py   # DDL resumido das views + regras de negocio
-  prompts.py          # system prompt + few-shot (testados contra o banco)
-  llm.py              # cliente Ollama, saida JSON estruturada
-  sql_guard.py         # validacao do SQL com sqlglot
-  pipeline.py          # pergunta -> SQL -> validacao -> execucao -> retry (max 3x)
-  ui.py                # interface Streamlit
-mysql/
-  dump.sql             # schema + carga original
-  x90_views.sql        # views semanticas (novo)
-  x91_usuario_readonly.sql  # usuario texto_sql_ro (novo)
-eval/
-  perguntas.yaml       # 30 perguntas com gabarito
-  run_eval.py          # avaliacao automatizada
-tests/
-  test_sql_guard.py
-  test_pipeline.py
-```
 
 ## Notas importantes sobre o banco
 
