@@ -103,6 +103,47 @@ python eval/run_eval.py --model llama3.1:8b --saida eval/relatorio_llama.csv
 Gera um relatorio no terminal (acuracia geral, por nivel, por tag, media de
 tentativas, tempo medio) e um CSV com o detalhe de cada pergunta.
 
+## Evaluation results
+
+*qwen2.5-coder:7b running locally on Ollama · 30 benchmark questions with gold SQL · strict execution match*
+
+| 76.7% (23/30) | 2/2 | 1.07 | 28.5s |
+|---|---|---|---|
+| Strict accuracy | Write requests correctly refused | Average attempts per question | Median latency per question |
+
+**By difficulty**
+
+| Level | Correct | % |
+|---|---|---|
+| Easy | 10/13 | 77% |
+| Medium | 10/12 | 83% |
+| Hard | 3/5 | 60% |
+
+**By capability**
+
+| Capability | Correct |
+|---|---|
+| Aggregation | 16/17 |
+| Geography | 4/4 |
+| Refusal | 2/2 |
+| Relative dates | 3/4 |
+| Ranking | 4/6 |
+| Category translation | 4/6 |
+| Text search | 0/2 |
+| Comparison | 0/2 |
+
+Reading the numbers: the benchmark is deliberately strict — a question only
+counts if the result has exactly the same columns and rows as the gold SQL.
+Of the 7 misses, only 1 is a clear model error (an empty result on a relative
+date question). 3 returned the right answer in a different shape (extra
+columns or a side-by-side layout) and 3 need SQL-level review. Only 2
+questions needed a retry, and both were answered correctly. Next step: log
+the generated SQL and report a lenient metric next to the strict one.
+
+Brings data platform discipline to GenAI: semantic layer, least-privilege
+access and measurable accuracy — the things that separate a production-ready
+assistant from a demo.
+
 ## Notas importantes sobre o banco
 
 - O motor rodando e **MySQL 8.0** (a imagem Docker usa `mysql:8.0`), apesar
