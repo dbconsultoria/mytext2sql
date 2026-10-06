@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 860" width="1400" height="860" font-family="DejaVu Sans, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3d4450"/>
+    </marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b4541a"/>
+    </marker>
+    <style>
+      .box{fill:#ffffff;stroke:#3d4450;stroke-width:1.5}
+      .sec{fill:#fff4e6;stroke:#b4541a;stroke-width:2}
+      .ext{fill:#eef3fb;stroke:#2f5b9a;stroke-width:1.5}
+      .q{fill:#eef7f0;stroke:#2f7a46;stroke-width:1.5}
+      .t{font-size:17px;font-weight:bold;fill:#1d2129}
+      .s{font-size:13px;fill:#4a515c}
+      .lbl{font-size:12.5px;fill:#3d4450}
+      .ln{stroke:#3d4450;stroke-width:1.6;fill:none}
+      .rl{stroke:#b4541a;stroke-width:1.8;fill:none;stroke-dasharray:6 4}
+    </style>
+  </defs>
+
+  <rect width="1400" height="860" fill="#fafaf8"/>
+  <text x="40" y="52" font-size="26" font-weight="bold" fill="#1d2129">mytext2sql · arquitetura</text>
+  <text x="40" y="76" class="s">Pergunta em português  →  SQL gerado por modelo local  →  validado  →  executado só leitura  →  resultado</text>
+
+  <!-- top row -->
+  <rect x="70" y="100" width="210" height="88" rx="8" class="box"/>
+  <text x="175" y="132" text-anchor="middle" class="t">schema_context.py</text>
+  <text x="175" y="153" text-anchor="middle" class="s">DDL das 4 views + 13 regras</text>
+  <text x="175" y="171" text-anchor="middle" class="s">+ JSON schema de saída</text>
+
+  <rect x="310" y="100" width="210" height="88" rx="8" class="ext"/>
+  <text x="415" y="132" text-anchor="middle" class="t">Ollama (local)</text>
+  <text x="415" y="153" text-anchor="middle" class="s">qwen2.5 coder 7b</text>
+  <text x="415" y="171" text-anchor="middle" class="s">localhost:11434</text>
+
+  <rect x="640" y="100" width="160" height="88" rx="8" class="ext"/>
+  <text x="720" y="140" text-anchor="middle" class="t">Usuário</text>
+  <text x="720" y="161" text-anchor="middle" class="s">pergunta em PT</text>
+
+  <rect x="850" y="100" width="190" height="88" rx="8" class="box"/>
+  <text x="945" y="132" text-anchor="middle" class="t">ui.py</text>
+  <text x="945" y="153" text-anchor="middle" class="s">Streamlit :8501</text>
+  <text x="945" y="171" text-anchor="middle" class="s">tabela + gráfico auto</text>
+
+  <line x1="800" y1="144" x2="848" y2="144" class="ln" marker-end="url(#a)" marker-start="url(#a)"/>
+
+  <!-- pipeline frame -->
+  <rect x="40" y="230" width="1000" height="250" rx="12" fill="none" stroke="#7a828f" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="560" y="256" font-size="15" font-weight="bold" fill="#3d4450">pipeline.py · orquestra a pergunta, até 3 tentativas</text>
+
+  <line x1="945" y1="188" x2="945" y2="228" class="ln" marker-end="url(#a)" marker-start="url(#a)"/>
+  <text x="955" y="214" class="lbl">pergunta / PipelineResult</text>
+
+  <line x1="175" y1="188" x2="175" y2="288" class="ln" marker-end="url(#a)"/>
+  <line x1="415" y1="190" x2="415" y2="288" class="ln" marker-end="url(#a)" marker-start="url(#a)"/>
+  <text x="425" y="206" class="lbl">temperature 0</text>
+  <text x="425" y="222" class="lbl">format = JSON schema</text>
+
+  <!-- pipeline steps -->
+  <rect x="70" y="290" width="210" height="100" rx="8" class="box"/>
+  <text x="175" y="322" text-anchor="middle" class="t">prompts.py</text>
+  <text x="175" y="343" text-anchor="middle" class="s">system prompt</text>
+  <text x="175" y="361" text-anchor="middle" class="s">10 exemplos user/assistant</text>
+  <text x="175" y="379" text-anchor="middle" class="s">+ erro anterior (retry)</text>
+
+  <rect x="310" y="290" width="210" height="100" rx="8" class="box"/>
+  <text x="415" y="322" text-anchor="middle" class="t">llm.py</text>
+  <text x="415" y="343" text-anchor="middle" class="s">chama o Ollama</text>
+  <text x="415" y="361" text-anchor="middle" class="s">parser JSON tolerante</text>
+  <text x="415" y="379" text-anchor="middle" class="s">→ ModelDecision</text>
+
+  <rect x="550" y="290" width="210" height="100" rx="8" class="sec"/>
+  <text x="655" y="322" text-anchor="middle" class="t">sql_guard.py</text>
+  <text x="655" y="343" text-anchor="middle" class="s">AST sqlglot · 1 SELECT</text>
+  <text x="655" y="361" text-anchor="middle" class="s">whitelist de views</text>
+  <text x="655" y="379" text-anchor="middle" class="s">injeta LIMIT 100</text>
+
+  <rect x="790" y="290" width="210" height="100" rx="8" class="box"/>
+  <text x="895" y="322" text-anchor="middle" class="t">db.py</text>
+  <text x="895" y="343" text-anchor="middle" class="s">pymysql · texto_sql_ro</text>
+  <text x="895" y="361" text-anchor="middle" class="s">MAX_EXECUTION_TIME 10s</text>
+  <text x="895" y="379" text-anchor="middle" class="s">teto de 1000 linhas</text>
+
+  <line x1="280" y1="340" x2="308" y2="340" class="ln" marker-end="url(#a)"/>
+  <line x1="520" y1="340" x2="548" y2="340" class="ln" marker-end="url(#a)"/>
+  <line x1="760" y1="340" x2="788" y2="340" class="ln" marker-end="url(#a)"/>
+
+  <!-- retry loop -->
+  <path d="M655,390 L655,445 L175,445 L175,394" class="rl" marker-end="url(#r)"/>
+  <path d="M850,390 L850,445 L655,445" class="rl"/>
+  <text x="300" y="467" font-size="13" fill="#b4541a" font-weight="bold">retry: SQL rejeitado ou erro do banco volta pro modelo com a mensagem</text>
+  <text x="300" y="428" font-size="12" fill="#b4541a">recusa do modelo encerra sem retry</text>
+
+  <!-- db to mysql -->
+  <line x1="945" y1="390" x2="945" y2="528" class="ln" marker-end="url(#a)"/>
+  <text x="955" y="508" class="lbl">SELECT validado</text>
+
+  <!-- MySQL container -->
+  <rect x="40" y="530" width="1000" height="290" rx="12" fill="#f2f4f7" stroke="#2f5b9a" stroke-width="1.8"/>
+  <text x="58" y="558" font-size="15" font-weight="bold" fill="#2f5b9a">MySQL 8 em Docker · banco mydb · scripts init em ordem: dump.sql → x90_views.sql → x91_usuario_readonly.sql</text>
+
+  <rect x="70" y="578" width="220" height="80" rx="8" class="box"/>
+  <text x="180" y="606" text-anchor="middle" class="t">vw_vendas</text>
+  <text x="180" y="626" text-anchor="middle" class="s">grão item de pedido</text>
+  <text x="180" y="644" text-anchor="middle" class="s">tudo desnormalizado</text>
+
+  <rect x="310" y="578" width="220" height="80" rx="8" class="box"/>
+  <text x="420" y="606" text-anchor="middle" class="t">vw_clientes</text>
+  <text x="420" y="626" text-anchor="middle" class="s">cidade, UF, idade</text>
+
+  <rect x="550" y="578" width="220" height="80" rx="8" class="box"/>
+  <text x="660" y="606" text-anchor="middle" class="t">vw_produtos</text>
+  <text x="660" y="626" text-anchor="middle" class="s">produto + categoria</text>
+
+  <rect x="790" y="578" width="220" height="80" rx="8" class="box"/>
+  <text x="900" y="606" text-anchor="middle" class="t">vw_referencia</text>
+  <text x="900" y="626" text-anchor="middle" class="s">1 linha: MAX(orderdate)</text>
+  <text x="900" y="644" text-anchor="middle" class="s">base de "último mês"</text>
+
+  <line x1="60" y1="690" x2="1020" y2="690" stroke="#b4541a" stroke-width="2.2" stroke-dasharray="8 5"/>
+  <rect x="300" y="678" width="480" height="24" rx="4" fill="#fff4e6"/>
+  <text x="540" y="695" text-anchor="middle" font-size="13" font-weight="bold" fill="#b4541a">texto_sql_ro: GRANT SELECT só nas 4 views</text>
+
+  <rect x="70" y="718" width="940" height="80" rx="8" fill="#e4e7ec" stroke="#8a919c" stroke-width="1.3"/>
+  <text x="540" y="748" text-anchor="middle" class="t" fill="#4a515c">Tabelas cruas tb*</text>
+  <text x="540" y="770" text-anchor="middle" class="s">tborders · tborderdetail · tbcustomers · tbproducts · tbcategories</text>
+  <text x="540" y="788" text-anchor="middle" class="s">invisíveis pro modelo e sem permissão pro usuário da aplicação</text>
+
+  <!-- quality column -->
+  <rect x="1080" y="230" width="280" height="250" rx="12" class="q"/>
+  <text x="1098" y="258" font-size="15" font-weight="bold" fill="#2f7a46">Qualidade</text>
+  <text x="1098" y="290" class="t" font-size="15">tests/</text>
+  <text x="1098" y="310" class="s">test_sql_guard.py: ~25 casos</text>
+  <text x="1098" y="328" class="s">de ataque e regras de LIMIT</text>
+  <text x="1098" y="346" class="s">test_pipeline.py: retry com</text>
+  <text x="1098" y="364" class="s">modelo e banco mockados</text>
+  <text x="1098" y="396" class="t" font-size="15">eval/</text>
+  <text x="1098" y="416" class="s">30 perguntas com gabarito</text>
+  <text x="1098" y="434" class="s">compara RESULTADO, não texto</text>
+  <text x="1098" y="452" class="s">acurácia por nível, tag, modelo</text>
+
+  <!-- security legend -->
+  <rect x="1080" y="530" width="280" height="290" rx="12" fill="#fff4e6" stroke="#b4541a" stroke-width="1.8"/>
+  <text x="1098" y="558" font-size="15" font-weight="bold" fill="#b4541a">Camadas de defesa</text>
+  <text x="1098" y="590" class="t" font-size="14">1 · Contexto restrito</text>
+  <text x="1098" y="608" class="s">modelo só conhece as views</text>
+  <text x="1098" y="640" class="t" font-size="14">2 · sql_guard (AST)</text>
+  <text x="1098" y="658" class="s">1 SELECT, whitelist, sem /*!</text>
+  <text x="1098" y="676" class="s">reserializa sem comentários</text>
+  <text x="1098" y="708" class="t" font-size="14">3 · Permissão no banco</text>
+  <text x="1098" y="726" class="s">GRANT SELECT só nas views</text>
+  <text x="1098" y="758" class="t" font-size="14">4 · Limites de recurso</text>
+  <text x="1098" y="776" class="s">timeout no servidor</text>
+  <text x="1098" y="794" class="s">teto de linhas</text>
+</svg>
